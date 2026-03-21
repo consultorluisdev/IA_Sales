@@ -1,0 +1,6 @@
+@IASales.Api_HostAddress = http://localhost:5090
+
+GET {{IASales.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

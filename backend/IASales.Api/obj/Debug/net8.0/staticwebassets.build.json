@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "usU+cBomT2/GXxTZsnoa/vHbzBhaD0SyHdk3kMSA3tg=",
+  "Source": "IASales.Api",
+  "BasePath": "_content/IASales.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
