@@ -224,3 +224,5 @@
 /mnt/projetos/IASales/backend/IASales.Api/obj/Debug/net8.0/IASales.Api.pdb
 /mnt/projetos/IASales/backend/IASales.Api/obj/Debug/net8.0/IASales.Api.genruntimeconfig.cache
 /mnt/projetos/IASales/backend/IASales.Api/obj/Debug/net8.0/ref/IASales.Api.dll
+/mnt/projetos/IASales/backend/IASales.Api/obj/Debug/net8.0/IASales.Api.sourcelink.json
+/mnt/projetos/IASales/backend/IASales.Api/bin/Debug/net8.0/BCrypt.Net-Next.dll

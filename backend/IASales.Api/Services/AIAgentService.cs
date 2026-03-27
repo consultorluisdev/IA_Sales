@@ -22,9 +22,9 @@ public class AIAgentService
         _config = config;
     }
 
-    public async Task<ChatRepnseDTO> ChatAsync(ChatMessageDTO dto, Guid tenandId)
+    public async Task<ChatReponseDTO> ChatAsync(ChatMessageDTO dto, Guid tenantId)
     {
-        AIConversation conversation;
+        IAConversation conversation;
 
         if (dto.ConversationId.HasValue)
         {
@@ -35,9 +35,8 @@ public class AIAgentService
         else
         {
             var products = await _ctx.Products
-                .Where(p => p.TenantId == tenandId)
                 .Take(20)
-                .Selecte(p => $"{p.Name} R${p.Price:F2}")
+                .Select(p => $"{p.Name} R${p.Price:F2}")
                 .ToListAsync();
             
             var systemPrompt = $"""
@@ -46,10 +45,10 @@ public class AIAgentService
                 Seja amigável, sugira produtos e ajude a fechar vendas.
                 Reponda sempre em português.
                 """;
-            }
-            conversation = new AIConversation
+
+            conversation = new IAConversation
             {
-                TenandId = tenandId,
+                TenantId = tenantId,
                 Channel = dto.Channel,
                 Messages = new List<ChatMessage>
                 {
@@ -65,7 +64,7 @@ public class AIAgentService
             Content = dto.Message
         });
 
-        var reply await CallClaudeAsync(convesation.Messages);
+        var reply = await CallClaudeAsync(conversation.Messages);
 
         conversation.Messages.Add(new ChatMessage
         {
@@ -81,23 +80,19 @@ public class AIAgentService
     public async Task<MarketingContentDTO> GenerateMarketingAsync(
         GenerateMarketingDTO dto, Guid tenandId)
     {
-        var product = await _ctx.Products.FirstAsync(dto.ProuctId)
+        var product = await _ctx.Products.FirstOrDefaultAsync(p => p.Id == dto.ProductId)
         ?? throw new Exception("Produto não encontrado.");
 
+        var jsonFormat = "{\"post\": \"texto do post\", \"adCopy\": \"texto do anúncio\", \"hashtags\": [\"tag1\", \"tag2\"], \"imageSuggestion\": \"descrição da imagem\"}";
         var prompt = $"""
             Crie conteúdo de marketing para:
             Produto: {product.Name}
             Preço: R${product.Price:F2}
-            Plataforma: {dto.Plataform}
+            Plataforma: {dto.Platform}
             Tom: {dto.Tone}
 
-            Retome APENAS JSON válido no formato:
-            {{
-                "post": "texto do post",
-                "adCopy": "texto do anúncio",
-                "hashtags": ["tag1", "tag2"],
-                "imageSuggestion": "descrição da imagem"
-            }}
+            Retorne APENAS JSON válido no formato:
+            {jsonFormat}
             """;
 
         var json = await CallClaudeAsync(new List<ChatMessage>
@@ -105,7 +100,7 @@ public class AIAgentService
             new() { Role = "user", Content = prompt }
         });
         
-        return JsonSerializer.Deserialize<MarktingContentDTO>(json,
+        return JsonSerializer.Deserialize<MarketingContentDTO>(json,
         new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
         ?? throw new Exception("Falha ao processar resposta da IA.");
     }
@@ -116,14 +111,14 @@ public class AIAgentService
         _http.DefaultRequestHeaders.Add("x-api-key", _config["Antrophic:ApiKey"]);
         _http.DefaultRequestHeaders.Add("anthropic-version", "2023-06-01");
 
-        var system = messages.FirstOrDefault(m => m.Role == "system")?.Content ?? ""
+        var system = messages.FirstOrDefault(m => m.Role == "system")?.Content ?? "";
         var msgs = messages
             .Where(m => m.Role != "system")
             .Select(m => new { role = m.Role, content = m.Content });
 
-        var body = new { model = "claude-sonnet-4-20225014", max_tokens = 1024, system, messages = msgs};
-        var data = await res.Content.ReadFromJsonAsync<JsonElement>();
-        return data.GetProperty("content")[0].GetPropert("text").GetString() ?? "";
+        var body = new { model = "claude-sonnet-4-20225014", max_tokens = 1024, system, messages = msgs };
+        var response = await _http.PostAsJsonAsync("https://api.anthropic.com/v1/messages", body);
+        var data = await response.Content.ReadFromJsonAsync<JsonElement>();
+        return data.GetProperty("content")[0].GetProperty("text").GetString() ?? "";
     }
-
 }

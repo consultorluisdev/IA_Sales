@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "ji0R2TMwBMDT21/8jOtc9PkzWq1F/rA+Etwea1zLAaPqxdu5IHNDjdJvs7M1WAwfbCDwP+3OA6jpbSu/BG24CA==",
+  "dgSpecHash": "P8491BuYrqDzY89HxIQZtCDfFO0YVYvoVQeJPplO33Gp1DPN37vL9GRQstcNco3J/vfxONiLiAZsiLAyVLgV+Q==",
   "success": true,
   "projectFilePath": "/mnt/projetos/IASales/backend/IASales.Api/IASales.Api.csproj",
   "expectedPackageFiles": [
+    "/home/luis/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/home/luis/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/luis/.nuget/packages/microsoft.aspnetcore.authentication/2.2.0/microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",
     "/home/luis/.nuget/packages/microsoft.aspnetcore.authentication.abstractions/2.2.0/microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",

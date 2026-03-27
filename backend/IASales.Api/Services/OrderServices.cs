@@ -8,7 +8,7 @@ namespace IASales.Api.Services;
 
 public class OrderServices
 {
-    private readonly AppDbContext _ctx
+    private readonly AppDbContext _ctx;
 
     public OrderServices(AppDbContext ctx) => _ctx = ctx;
 
@@ -25,12 +25,6 @@ public class OrderServices
         return await _ctx.Orders
             .Include(o => o.Customer)
             .FirstOrDefaultAsync(o => o.Id == id && o.TenantId == tenantId);
-    }
-    public async Task<Order?> GetByIdAsync(Guid id, Guid tenantId)
-    {
-        return await _ctx.Orders
-        .Include(o => o.Customer)
-        .FirstOrDefaultAsync(o => o.Id == id && o.TenantId == tenantId);
     }
     public async Task<Order> CreateAsync(CreateOrderDTO dto, Guid tenantId)
     {
@@ -49,7 +43,6 @@ public class OrderServices
         };
         _ctx.Orders.Add(order);
 
-        // atualiza o status do cliente
         if(dto.CustomerId.HasValue)
         {
             var customer = await _ctx.Customers.FindAsync(dto.CustomerId.Value);

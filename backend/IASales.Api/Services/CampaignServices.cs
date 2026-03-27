@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace IASales.Api.Services;
 
-public class CampaignServices
+public class CampaignServices : ICampaignService
 {
     private readonly AppDbContext _ctx;
     private readonly AIAgentService _ai;
@@ -23,37 +23,35 @@ public class CampaignServices
             .OrderByDescending(c => c.CreatedAt)
             .ToListAsync();
     }
-    public async Task<Campaing> CreateAsync(CreatedCampingDTO dto, Guid tenandId)
+    public async Task<Campaing> CreateAsync(CreateCampaingDTO dto, Guid tenandId)
     {
         var campign = new Campaing
         {
             TenantId = tenandId,
             Name = dto.Name,
-            Platform = dto.Platform,
+            Platform = dto.Plataform,
             Objective = dto.Objective,
-            BudgetDaily = dto.BudgetDaly,
-            AIGenerated = dto.GenerateWithAI
+            BudgetDaily = dto.BudgetDaily,
+            IAGenerated = dto.GenerateWithAI
         };
 
 
-        // gera conteudo com IA se solicitado
         if (dto.GenerateWithAI && dto.ProductId.HasValue)
         {
             var product = await _ctx.Products.FindAsync(dto.ProductId.Value);
             if (product != null)
             {
-                    var content = await _ai.GenerateMarketingAsync(
-                        new GenerateMarketingDTO(dto.ProductId.Value, dto.Platform, "vendas"),
-                        tenandId);
+                var content = await _ai.GenerateMarketingAsync(
+                    new GenerateMarketingDTO(dto.ProductId.Value, dto.Plataform, "vendas"),
+                    tenandId);
 
-                    campign.Adcopy = content.AdCopy;
-                    campign.Headline = content.Post;
-                }
+                campign.Adcopy = content.AdCopy;
+                campign.Headline = content.Post;
             }
-            _ctx.Campaigns.Add(campign);
-            await _ctx.SaveChangesAsync();
-            return campign;
         }
+        _ctx.Campaigns.Add(campign);
+        await _ctx.SaveChangesAsync();
+        return campign;
     }    
 
     public async Task<Campaing?> UpdateStatusAsync(Guid id, string status, Guid tenandId)

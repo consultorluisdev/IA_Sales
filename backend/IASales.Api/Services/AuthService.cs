@@ -24,7 +24,7 @@ public class AuthService
         var user = await _ctx.Users
         .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
-        if(user == null || !BCrypt.Net.Verify(dto.Password, user.PasswordHash))
+        if(user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
         return null;
 
         var token = GenerateJwt(user);
@@ -43,7 +43,7 @@ public class AuthService
         {
             Name = dto.Name,
             Email = dto.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HasPassword(dto.Password),
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
             Role = "seller"
         };
         _ctx.Users.Add(user);
@@ -58,8 +58,9 @@ public class AuthService
     }
     private string GenerateJwt(User user)
     {
+        var secret = _config["JWT:Secret"] ?? throw new InvalidOperationException("JWT:Secret não configurado");
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_config["JWT:Secret"]));
+            Encoding.UTF8.GetBytes(secret));
 
         var claims = new[]
         {
@@ -72,7 +73,7 @@ public class AuthService
             audience: _config["JWT:Audience"],
             claims: claims,
             expires: DateTime.UtcNow.AddHours(8),
-            singnigCredentials: new SigningCredentials(
+            signingCredentials: new SigningCredentials(
                 key, SecurityAlgorithms.HmacSha256)
         );
         return new JwtSecurityTokenHandler().WriteToken(token);

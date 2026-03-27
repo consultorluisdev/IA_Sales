@@ -8,7 +8,7 @@ namespace IASales.Api.Services;
 
 public class CustomerService
 {
-    private readonly AppDbContext : _ctx;
+    private readonly AppDbContext _ctx;
 
     public CustomerService(AppDbContext ctx) => _ctx = ctx;
 
@@ -23,28 +23,30 @@ public class CustomerService
     {
         return await _ctx.Customers
             .Include(c => c.Orders)
-            .FirstOrDefaultAsyn(c => c.Id == id && c.TenandId == tenandId);
+            .FirstOrDefaultAsync(c => c.Id == id && c.TenantId == tenandId);
     }
-    public async Task<Customer> CreateAsync(CreateCustomerDTO, dto, Guid tenandId)
+    public async Task<Customer> CreateAsync(CreateCustomerDTO dto, Guid tenandId)
     {
         var customer = new Customer
         {
             TenantId = tenandId,
             Name = dto.Name,
             Email = dto.Email,
-            Phone = dto.Phone,
+            Phone = dto.Phone ?? "",
             Source = dto.Source,
-            Interests = dto.Interests,
-            Notes = dto.Notes
+            Interests = dto.Interests ?? new List<string>(),
+            Notes = dto.Notes ?? ""
         };
-        _ctx.Customer.Add(customer);
-        await _ctx.SavedChangesAsync();
+        _ctx.Customers.Add(customer);
+        await _ctx.SaveChangesAsync();
         return customer;
     }
     public async Task<Customer?> UpdateAsync(Guid id, UpdateCustomerDTO dto, Guid tenantId)
     {
         var customer = await _ctx.Customers
-            .FirstOrDefaultAync(c => c.Id == id && TenantId == tenantId);
+            .FirstOrDefaultAsync(c => c.Id == id && c.TenantId == tenantId);
+
+        if(customer == null) return null;
 
         if(dto.Name != null) customer.Name = dto.Name;
         if(dto.Email != null) customer.Email = dto.Email;
@@ -57,7 +59,7 @@ public class CustomerService
     public async Task<bool> DeleteAsync(Guid id, Guid tenantId)
     {
         var customer = await _ctx.Customers
-            .FirstOrDefaultAsync(c => c.Id == id && c.TenandId == tenantId);
+            .FirstOrDefaultAsync(c => c.Id == id && c.TenantId == tenantId);
         if(customer == null) return false;
 
         _ctx.Customers.Remove(customer);
