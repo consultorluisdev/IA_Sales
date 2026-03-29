@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "ms-vscode.vscode-typescript-next",
+    "firsttris.vscode-jest-runner",
+    "bradgarropy.styled-components-snippets",
+    "dsznajder.es7-react-js-snippets",
+    "Dart-Code.flutter",
+    "Dart-Code.dart-code",
+    "ms-dotnettools.csharp",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.black-formatter",
+    "visualstudioexptteam.vscodeintellicode"
+  ]
+}
