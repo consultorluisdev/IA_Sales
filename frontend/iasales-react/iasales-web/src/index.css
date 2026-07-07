@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@import "tailwindcss";
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: #05050a;
+  color: #f0f0f8;
+}
+
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-thumb { background: #ffffff18; border-radius: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 100px #12121e inset !important;
+  -webkit-text-fill-color: #f0f0f8 !important;
+}

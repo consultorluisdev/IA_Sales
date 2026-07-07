@@ -19,13 +19,15 @@ public class AuthService
         _ctx = ctx;
         _config = config;
     }
+    // login atenticação
     public async Task<AuthResponseDTO?> LoginAsync(LoginDTO dto)
     {
         var user = await _ctx.Users
         .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
         if(user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-        return null;
+        throw new Exception("Credenciais inválidas.");
+
 
         var token = GenerateJwt(user);
 

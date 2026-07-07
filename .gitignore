@@ -1,0 +1,39 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstats
+*.userprefs
+*.csproj.user
+**/packages/
+*.nupkg
+
+# Node
+node_modules/
+*.js.map
+*.ts.map
+*.d.ts.map
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+appsettings.Development.json
+*.Development.json
+
+# Uploads
+uploads/
+wwwroot/uploads/
+
+# OpenCode
+.opencode/
